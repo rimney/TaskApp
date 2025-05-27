@@ -6,7 +6,7 @@ async function bootstrap() {
   const app = await NestFactory.create(AppModule);
   app.enableCors({
     credentials: true,
-    origin: 'https://arm-assessment-front-xc63d.ondigitalocean.app/', // Your Next.js frontend URL
+    origin: 'https://arm-assessment-front-k6x3p.ondigitalocean.app/', // Your Next.js frontend URL
     // origin: 'http://localhost:3000', // Your Next.js frontend URL
     
   });
@@ -17,6 +17,6 @@ async function bootstrap() {
       transform: true, // Automatically transform payloads to DTO instances
     }),
   );
-  await app.listen(8080); // Backend runs on port 5000
+  await app.listen(8081); // Backend runs on port 5000
 }
 bootstrap();

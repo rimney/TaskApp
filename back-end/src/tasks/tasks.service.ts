@@ -5,6 +5,7 @@ import { UpdateTaskDto } from './dto/update-task.dto';
 import { tasks } from '@prisma/client';
 import { Prisma } from '@prisma/client';
 
+
 @Injectable()
 export class TasksService {
   constructor(private readonly prisma: PrismaService) {}

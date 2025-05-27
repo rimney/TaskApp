@@ -9,12 +9,12 @@ datasource db {
 
 model tasks {
   id          Int      @id @default(autoincrement())
-  category    Category
   title       String   @db.VarChar(100)
-  priority    Priority
   duedate     DateTime @db.Date
-  status      Status
   description Json
+  priority    Priority
+  status      Status
+  category    Category
 }
 
 enum Priority {
