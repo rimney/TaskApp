@@ -18,14 +18,13 @@ interface Task {
   };
 }
 
-
 export function DescriptionRenderer({ task }: { task: Task }) {
   const { description, priority, status, category, duedate } = task;
 
   const statusColors = {
-    "In_Progress": "#9d9bfe",
-    "In_Review": "#ECA7FE",
-    "On_Hold": "#F6BC54",
+    In_Progress: "#9d9bfe",
+    In_Review: "#ECA7FE",
+    On_Hold: "#F6BC54",
     Completed: "#5DD66A",
   };
 
@@ -47,8 +46,8 @@ export function DescriptionRenderer({ task }: { task: Task }) {
   }
 
   return (
-    <div className="space-y-4 ml-4 overflow-auto">
-      <div className="flex items-center gap-2  flex-wrap">
+    <div className="space-y-4 ml-4  overflow-auto">
+      <div className="flex items-center gap-2 flex-wrap">
         <Badge
           className="h-[25px] cursor-pointer text-black"
           style={{ backgroundColor: priorityColors[priority] || "#FFFFFF" }}
@@ -57,13 +56,11 @@ export function DescriptionRenderer({ task }: { task: Task }) {
         </Badge>
         <Badge
           className="h-[25px] cursor-pointer text-black"
-          style={{ backgroundColor: statusColors[
-      // @ts-expect-error type
-            
-            status] || "#FFFFFF" }}
-        >
-          {status.split('_')[0]} {status.split('_')[1]}
+            // @ts-expect-error unknown type error
 
+          style={{ backgroundColor: statusColors[status.replace(' ', '_')] || "#FFFFFF" }}
+        >
+          {status}
         </Badge>
         <Badge
           className="h-[25px] cursor-pointer text-black"
@@ -71,35 +68,35 @@ export function DescriptionRenderer({ task }: { task: Task }) {
         >
           {category}
         </Badge>
-        <Badge className="h-[25px] cursor-pointer text-black bg-gray-200">
+        <Badge className="h-[25px] cursor-pointer text-black bg-[#CAFE14]  ">
           <Calendar className="mr-1 h-4 w-4" />
           {duedate}
         </Badge>
       </div>
-      <div className="w-full h-auto  overflow-auto">
+      <div className="w-full h-auto overflow-auto">
         <div>
-          <h3 className="text-lg font-semibold   my-2">Summary</h3>
-          <p className="text-gray-700 break-words w-[98%]">{description?.summary || "No summary provided"}</p>
+          <h3 className="text-lg font-semibold my-2 text-[#CAFE14]">Summary</h3>
+          <p className="text-gray-300 break-words w-[98%]">{description?.summary || "No summary provided"}</p>
         </div>
         <div>
-          <h3 className="text-lg font-semibold   my-2">Details</h3>
-          <p className="text-gray-700 break-words w-[98%]">{description?.details || "No details provided"}</p>
+          <h3 className="text-lg font-semibold my-2 text-[#CAFE14]">Details</h3>
+          <p className="text-gray-300 break-words w-[98%]">{description?.details || "No details provided"}</p>
         </div>
         <div>
-          <h3 className="text-lg font-semibold   my-2">Acceptance Criteria</h3>
+          <h3 className="text-lg font-semibold my-2 text-[#CAFE14]">Acceptance Criteria</h3>
           <ul className="list-disc pl-5 space-y-1">
             {description?.acceptanceCriteria?.length > 0 ? (
               description.acceptanceCriteria.map((criterion, index) => (
-                <li key={index} className="text-gray-700 break-words w-[98%]">{criterion}</li>
+                <li key={index} className="text-gray-300 break-words w-[98%]">{criterion}</li>
               ))
             ) : (
-              <li className="text-gray-700 break-words w-[98%]">No acceptance criteria provided</li>
+              <li className="text-gray-300 break-words w-[98%]">No acceptance criteria provided</li>
             )}
           </ul>
         </div>
         <div>
-          <h3 className="text-lg font-semibold   my-2">Notes</h3>
-          <p className="text-gray-700 break-words w-[98%]">{description?.notes || "No notes provided"}</p>
+          <h3 className="text-lg font-semibold my-2 text-[#CAFE14]">Notes</h3>
+          <p className="text-gray-300 break-words w-[98%]">{description?.notes || "No notes provided"}</p>
         </div>
       </div>
     </div>

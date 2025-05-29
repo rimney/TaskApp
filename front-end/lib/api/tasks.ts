@@ -51,7 +51,8 @@ export const updateTask = async (id: number, task: Partial<Task>): Promise<Task>
 
 export const deleteTask = async (id: number): Promise<void> => {
   try {
-    await axios.delete(`${API_URL}/${id}`);
+    const response = await axios.delete<Task>(`${API_URL}/${id}`);
+    console.log(response.data)
   } catch (error) {
     const axiosError = error as AxiosError<{ message: string }>;
     throw new Error(axiosError.response?.data?.message || 'Failed to delete task');

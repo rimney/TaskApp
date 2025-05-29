@@ -1,5 +1,9 @@
+'use client';
+
 import { CardContent, CardFooter } from '@/components/ui/card';
 import { Column } from '@/components/Column';
+import { useDeviceMode } from '@/lib/hooks/useDeviceMode'; // Adjust path as needed
+import React from 'react';
 
 interface Task {
   id: number;
@@ -26,16 +30,20 @@ interface TaskColumnsProps {
   tasks: Task[];
   viewMode: 'status' | 'priority';
   moveTask: (taskId: number, newValue: string) => void;
-  onEdit: (task: Task) => void;
-  onDelete: (taskId: number) => void;
+  onEdit: (task: Task) => Promise<void>;
+  onDelete: (taskId: number) => Promise<void>;
 }
 
 export default function TaskColumns({ columns, tasks, viewMode, moveTask, onEdit, onDelete }: TaskColumnsProps) {
+  const deviceMode = useDeviceMode();
+
   return (
     <>
-      <CardContent>
+      <CardContent className={`min-h-screen bg-[#171818] p-${deviceMode === 'mobile' ? '2' : '4'}`}>
         <div
-          className="w-full h-auto flex flex-col sm:flex-row overflow-x-auto gap-4 p-4"
+          className={`w-full h-${deviceMode === 'mobile' ? 'auto' : '[calc(100vh-200px)]'} flex ${
+            deviceMode === 'mobile' ? 'flex-col' : 'flex-row'
+          } overflow-x-auto gap-${deviceMode === 'mobile' ? '2' : '4'} p-${deviceMode === 'mobile' ? '2' : '4'}`}
           data-scroll-container="tasks"
         >
           {columns.map((column) => (
@@ -43,7 +51,7 @@ export default function TaskColumns({ columns, tasks, viewMode, moveTask, onEdit
               key={column.label}
               status={column.label}
               color={column.color}
-      // @ts-expect-error type
+            // @ts-expect-error unknown type error
 
               tasks={tasks.filter((task) =>
                 viewMode === 'status'
@@ -52,17 +60,15 @@ export default function TaskColumns({ columns, tasks, viewMode, moveTask, onEdit
               )}
               moveTask={moveTask}
               isPriorityView={viewMode === 'priority'}
-      // @ts-expect-error type
+            // @ts-expect-error unknown type error
 
               onEdit={onEdit}
-      // @ts-expect-error type
-
               onDelete={onDelete}
             />
           ))}
         </div>
       </CardContent>
-      <CardFooter></CardFooter>
+      <CardFooter className="bg-[#171818]"></CardFooter>
     </>
   );
 }

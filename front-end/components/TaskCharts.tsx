@@ -1,5 +1,5 @@
 import { Card, CardHeader, CardTitle, CardDescription } from '../components/ui/card';
-import { Tabs, TabsContent, TabsList, TabsTrigger } from '../components/ui/tabs';
+import { Tabs, TabsList, TabsTrigger, TabsContent } from '../components/ui/tabs';
 import {
   ChartContainer,
   ChartLegend,
@@ -84,31 +84,41 @@ export default function TaskCharts({ tasks }: TaskChartsProps) {
   const { statusChartData, categoryChartData } = computeChartData();
 
   return (
-    <Card className='mt-4 '>
+    <Card className=" my-4 bg-[#171818] border border-white shadow-lg">
       <CardHeader>
-        <CardTitle>Statistics</CardTitle>
-        <CardDescription>Preview Project Statistics Here</CardDescription>
+        <CardTitle className="text-[#CAFE14]">Statistics</CardTitle>
+        <CardDescription className="text-gray-300">Preview Project Statistics Here</CardDescription>
       </CardHeader>
-      <div className="w-full h-auto py-4  flex items-center justify-center">
+      <div className="w-full min-h-[600px] py-4 flex items-center justify-center">
         <Tabs defaultValue="status" className="w-full max-w-[1300px] px-4 sm:px-0">
-          <TabsList className="grid w-full grid-cols-2">
-            <TabsTrigger value="status">Task Status</TabsTrigger>
-            <TabsTrigger value="category">Task Category</TabsTrigger>
+          <TabsList className="grid w-full grid-cols-2 rounded-[13px] bg-[#171818]">
+            <TabsTrigger
+              value="status"
+              className="text-gray-300 data-[state=active]:text-[black] data-[state=inactive]:text-[#CAFE14] data-[state=active]:bg-[#CAFE14] data-[state=active]:border data-[state=active]:border-black"
+            >
+              Task Status
+            </TabsTrigger>
+            <TabsTrigger
+              value="category"
+              className="text-gray-300 data-[state=active]:text-[black] data-[state=inactive]:text-[#CAFE14] data-[state=active]:bg-[#CAFE14] data-[state=active]:border data-[state=active]:border-black"
+            >
+              Task Category
+            </TabsTrigger>
           </TabsList>
-          <TabsContent value="status">
+          <TabsContent value="status" className="bg-[#171818] rounded-lg shadow-lg">
             <div className="w-full h-[300px] sm:h-[450px] mt-6 sm:mt-10 flex items-center justify-center">
-              <ChartContainer config={statusChartConfig} className="w-full max-w-[950px]">
+              <ChartContainer config={statusChartConfig} className="w-full max-w-[950px] text-gray-100">
                 <BarChart accessibilityLayer data={statusChartData}>
-                  <CartesianGrid vertical={false} />
+                  <CartesianGrid vertical={false} stroke="#4b4b4b" />
                   <XAxis
                     dataKey="month"
                     tickLine={false}
                     tickMargin={10}
                     axisLine={false}
                     tickFormatter={(value) => value}
-                    tick={{ fontSize: '12px', dy: 5 }}
+                    tick={{ fontSize: '12px', dy: 5, fill: '#CAFE14' }}
                   />
-                  <ChartTooltip content={<ChartTooltipContent />} />
+                  <ChartTooltip content={<ChartTooltipContent className="bg-[#171818] border-white text-gray-100" />} />
                   <ChartLegend content={<ChartLegendContent />} />
                   <Bar dataKey="In_Progress" fill="var(--color-In_Progress)" radius={4} />
                   <Bar dataKey="In_Review" fill="var(--color-In_Review)" radius={4} />
@@ -118,20 +128,20 @@ export default function TaskCharts({ tasks }: TaskChartsProps) {
               </ChartContainer>
             </div>
           </TabsContent>
-          <TabsContent value="category">
+          <TabsContent value="category" className="bg-[#171818] rounded-lg shadow-lg">
             <div className="w-full h-[300px] sm:h-[450px] mt-6 sm:mt-10 flex items-center justify-center">
-              <ChartContainer config={categoryChartConfig} className="w-full max-w-[950px]">
+              <ChartContainer config={categoryChartConfig} className="w-full max-w-[950px] text-gray-100">
                 <BarChart accessibilityLayer data={categoryChartData}>
-                  <CartesianGrid vertical={false} />
+                  <CartesianGrid vertical={false} stroke="#4b4b4b" />
                   <XAxis
                     dataKey="month"
                     tickLine={false}
                     tickMargin={10}
                     axisLine={false}
                     tickFormatter={(value) => value}
-                    tick={{ fontSize: '12px', dy: 5 }}
+                    tick={{ fontSize: '12px', dy: 5, fill: '#CAFE14' }}
                   />
-                  <ChartTooltip content={<ChartTooltipContent />} />
+                  <ChartTooltip content={<ChartTooltipContent className="bg-[#171818] border-white text-gray-100" />} />
                   <ChartLegend content={<ChartLegendContent />} />
                   <Bar dataKey="Development" fill="var(--color-Development)" radius={4} />
                   <Bar dataKey="Testing" fill="var(--color-Testing)" radius={4} />

@@ -18,20 +18,17 @@ export default async function createSupabaseServerClient() {
           try {
             (await cookieStore).set({ name, value, ...options })
           } catch (error) {
-            console.log(error)
-
-
+            console.error('Set cookie error:', error);
           }
         },
         async remove(name: string, options: CookieOptions) {
           try {
             (await cookieStore).set({ name, value: '', ...options })
           } catch (error) {
-              console.log(error)
-
+            console.error('Remove cookie error:', error);
           }
         },
       },
-    } 
+    }
   )
 }

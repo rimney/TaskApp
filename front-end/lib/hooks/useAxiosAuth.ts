@@ -9,11 +9,11 @@ const useAxiosAuth = () => {
 
     useEffect(() => {
         const requestIntercept = axiosAuth.interceptors.request.use(async (config) => {
-            const { data: session} = await supabase.auth.getSession();
+            const { data: session } = await supabase.auth.getSession();
             const accessToken = session?.session?.access_token;
             
             if (!config.headers['Authorization']) {
-                config.headers['Authorization'] = `bearer ${accessToken}`
+                config.headers['Authorization'] = `Bearer ${accessToken}`;
             }
             return config;
         },

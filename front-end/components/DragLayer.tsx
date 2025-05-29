@@ -5,7 +5,12 @@ import { TaskCard } from './TaskCard';
 import { useEffect, useRef } from 'react';
 import React from 'react';
 
+
+
 export function DragLayer() {
+
+    // const { setDragging } = useDragStore();
+
   const { isDragging, item, currentOffset } = useDragLayer((monitor) => ({
     item: monitor.getItem(),
     isDragging: monitor.isDragging(),
@@ -65,7 +70,6 @@ export function DragLayer() {
         }
       }
 
-      // Fallback to parent container
       if (parentContainer) {
         const rect = parentContainer.getBoundingClientRect();
         console.log('Parent container rect:', {
@@ -181,7 +185,7 @@ export function DragLayer() {
         description={item.description}
         onEdit={() => Promise.resolve()}
         onDelete={() => Promise.resolve()}
-      />
+      /> *
     </div>
   );
 }

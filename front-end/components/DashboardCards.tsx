@@ -15,10 +15,10 @@ interface DashboardCardsProps {
 
 export default function DashboardCards({ statusCounts }: DashboardCardsProps) {
   return (
-    <Card>
+    <Card className="bg-[#171818] border border-white shadow-lg">
       <CardHeader>
-        <CardTitle>Dashboard</CardTitle>
-        <CardDescription>Preview Tasks And Tasks Data Here</CardDescription>
+        <CardTitle className="text-[#CAFE14]">Dashboard</CardTitle>
+        <CardDescription className="text-gray-300">Preview Tasks And Tasks Data Here</CardDescription>
       </CardHeader>
       <div className="w-full h-auto flex flex-col sm:flex-row items-center justify-evenly gap-4 p-4">
         {[
@@ -29,7 +29,7 @@ export default function DashboardCards({ statusCounts }: DashboardCardsProps) {
         ].map(({ status, count, color }) => (
           <Card
             key={status}
-            className="w-full sm:w-[300px] h-[150px] border rounded-[13px]"
+            className="w-full sm:w-[300px] h-[150px] border border-white rounded-[13px] shadow-lg"
             style={{ backgroundColor: color }}
           >
             <div className="w-full h-[70px] flex flex-col">
