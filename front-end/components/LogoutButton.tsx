@@ -5,10 +5,12 @@ import { useRouter } from 'next/navigation';
 import { toast } from 'sonner';
 import { getSupabaseFrontendClient } from '../lib/client';
 import React from 'react';
+import { useDeviceMode } from '@/lib/hooks/useDeviceMode';
 
 export default function LogoutButton() {
   const router = useRouter();
   const supabase = getSupabaseFrontendClient();
+  const deviceMode = useDeviceMode();
 
   const logout = async () => {
     try {
@@ -26,7 +28,7 @@ export default function LogoutButton() {
             <div className="w-auto h-[50px] flex items-center justify-center">
         <img
           src="https://framerusercontent.com/images/vsdu0muTZsCIA7B6kX4sGvniM.svg?scale-down-to=1024"
-          className="w-[330px] ml-2"
+          className={`${deviceMode === 'desktop' ? 'w-[330px] ml-2' : 'w-[230px]'}  `}
           alt=""
         />
       </div>

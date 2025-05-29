@@ -50,20 +50,20 @@ interface CreateTaskFormProps {
 }
 
 function CreateTaskForm({ handleCreateTask }: CreateTaskFormProps) {
-  const [loading, setLoading] = useState(false); // Add loading state
+  const [loading, setLoading] = useState(false);
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
-    setLoading(true); // Set loading to true when submission starts
+    setLoading(true);
     try {
-      await handleCreateTask(e); // Call the provided handleCreateTask
+      await handleCreateTask(e);
     } finally {
-      setLoading(false); // Reset loading state after submission (success or failure)
+      setLoading(false);
     }
   };
 
   return (
     <form onSubmit={handleSubmit} className="space-y-4">
-      <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 sm:gap-6">
+      <div className="grid grid-cols-1 gap-4 sm:gap-6">
         <div className="space-y-4">
           <div>
             <Label className="mb-2 text-sm sm:text-base text-[#CAFE14]" htmlFor="title">
@@ -73,7 +73,7 @@ function CreateTaskForm({ handleCreateTask }: CreateTaskFormProps) {
               id="title"
               name="title"
               required
-              disabled={loading} // Disable input during loading
+              disabled={loading}
               className="border-white bg-[#171818] text-gray-100 placeholder-gray-400 focus:ring-white focus:border-white"
             />
           </div>
@@ -128,7 +128,7 @@ function CreateTaskForm({ handleCreateTask }: CreateTaskFormProps) {
               </SelectContent>
             </Select>
           </div>
-          <div className="w-full sm:w-[140px]">
+          <div className="w-full">
             <Label className="mb-2 text-sm sm:text-base text-[#CAFE14]" htmlFor="duedate">
               Due Date
             </Label>
@@ -137,7 +137,7 @@ function CreateTaskForm({ handleCreateTask }: CreateTaskFormProps) {
               name="duedate"
               type="date"
               required
-              disabled={loading} // Disable input during loading
+              disabled={loading}
               className="border-white bg-[#171818] text-gray-100 placeholder-gray-400 focus:ring-white focus:border-white"
             />
           </div>
@@ -148,11 +148,11 @@ function CreateTaskForm({ handleCreateTask }: CreateTaskFormProps) {
               Summary
             </Label>
             <Textarea
-              className="max-h-[100px] sm:max-h-[120px] overflow-scroll border-white bg-[#171818] text-gray-100 placeholder-gray-400 focus:ring-white focus:border-white"
+              className="max-h-[100px] overflow-scroll border-white bg-[#171818] text-gray-100 placeholder-gray-400 focus:ring-white focus:border-white"
               id="summary"
               name="summary"
               required
-              disabled={loading} // Disable textarea during loading
+              disabled={loading}
             />
           </div>
           <div>
@@ -160,11 +160,11 @@ function CreateTaskForm({ handleCreateTask }: CreateTaskFormProps) {
               Details
             </Label>
             <Textarea
-              className="max-h-[100px] sm:max-h-[120px] overflow-scroll border-white bg-[#171818] text-gray-100 placeholder-gray-400 focus:ring-white focus:border-white"
+              className="max-h-[100px] overflow-scroll border-white bg-[#171818] text-gray-100 placeholder-gray-400 focus:ring-white focus:border-white"
               id="details"
               name="details"
               required
-              disabled={loading} // Disable textarea during loading
+              disabled={loading}
             />
           </div>
           <div>
@@ -172,11 +172,11 @@ function CreateTaskForm({ handleCreateTask }: CreateTaskFormProps) {
               Acceptance Criteria (one per line)
             </Label>
             <Textarea
-              className="max-h-[100px] sm:max-h-[120px] overflow-scroll border-white bg-[#171818] text-gray-100 placeholder-gray-400 focus:ring-white focus:border-white"
+              className="max-h-[100px] overflow-scroll border-white bg-[#171818] text-gray-100 placeholder-gray-400 focus:ring-white focus:border-white"
               id="acceptanceCriteria"
               name="acceptanceCriteria"
               placeholder="Enter each criterion on a new line"
-              disabled={loading} // Disable textarea during loading
+              disabled={loading}
             />
           </div>
           <div>
@@ -187,7 +187,7 @@ function CreateTaskForm({ handleCreateTask }: CreateTaskFormProps) {
               className="max-h-[80px] overflow-scroll border-white bg-[#171818] text-gray-100 placeholder-gray-400 focus:ring-white focus:border-white"
               id="notes"
               name="notes"
-              disabled={loading} // Disable textarea during loading
+              disabled={loading}
             />
           </div>
         </div>
@@ -195,8 +195,8 @@ function CreateTaskForm({ handleCreateTask }: CreateTaskFormProps) {
       <div className="w-full flex justify-center">
         <Button
           type="submit"
-          className="w-[110px] border border-black bg-[#CAFE14] cursor-pointer text-[#171818] shadow-[4px_5px_0px_0px_#ffffff] hover:bg-white hover:text-black hover:shadow-[0_0_15px_10px_rgba(255,255,255,0.3)] transition-all duration-300"
-          disabled={loading} // Disable button during loading
+          className="w-[120px] border border-black bg-[#CAFE14] cursor-pointer text-[#171818] shadow-[4px_5px_0px_0px_#ffffff] hover:bg-white hover:text-black hover:shadow-[0_0_15px_10px_rgba(255,255,255,0.3)] transition-all duration-300"
+          disabled={loading}
         >
           {loading ? 'Adding task...' : 'Create Task'}
         </Button>
@@ -216,14 +216,14 @@ export default function CreateTaskDialog({
     <Sheet open={isDialogOpen} onOpenChange={setIsDialogOpen}>
       <SheetTrigger asChild>
         <Button
-          className="bg-[#CAFE1436] text-center text-black hover:bg-[#CAFE14] hover:text-[#171818] hover:shadow-[0_0_15px_10px_rgba(255,255,255,0.3)] transition-all duration-300"
-        >
+          className={`bg-[#CAFE1436] text-center ${isMobile ? 'bg-[#CAFE14]' : ''} text-black hover:bg-[#CAFE14] hover:text-[#171818] hover:shadow-[0_0_15px_10px_rgba(255,255,255,0.3)] transition-all duration-300`}
+        > 
           Create Task <BadgePlus />
         </Button>
       </SheetTrigger>
       <SheetContent
         side="bottom"
-        className="w-full h-[800px] overflow-y-auto rounded-t-[20px] p-4 bg-[#171818] border border-white shadow-lg"
+        className="w-[100vw] h-[80vh] bg-[#171818] border-t border-white shadow-lg rounded-t-[20px] p-4 focus:ring-0 [&>button]:text-[#CAFE14] [&>button]:hover:text-white [&>button]:hover:bg-[#2a2b2b]"
       >
         <SheetHeader>
           <SheetTitle className="text-[#CAFE14]">Create New Task</SheetTitle>
@@ -231,7 +231,7 @@ export default function CreateTaskDialog({
             Fill in the details to create a new task.
           </SheetDescription>
         </SheetHeader>
-        <div className="mt-4">
+        <div className="overflow-y-auto mt-4">
           <CreateTaskForm handleCreateTask={handleCreateTask} />
         </div>
       </SheetContent>

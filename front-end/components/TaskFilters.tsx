@@ -140,43 +140,36 @@ export default function TaskFilters({
       <CardHeader>
         <CardTitle className="text-[#CAFE14]">Tasks</CardTitle>
         <CardDescription className="text-gray-300">Manage your tasks here</CardDescription>
-        <div className="flex flex-col sm:flex-row gap-2">
+        <div className="flex flex-col sm:flex-row gap-3">
           <Button
             variant={viewMode === 'status' ? 'default' : 'outline'}
-            className={`${
-              viewMode === 'status'
+            className={`${viewMode === 'status'
                 ? 'bg-[#CAFE14] text-[#171818] shadow-[4px_5px_0px_0px_#ffffff] hover:bg-white border border-black hover:text-black hover:shadow-[0_0_15px_10px_rgba(255,255,255,0.3)]'
                 : 'bg-[#CAFE1436] text-[#CAFE14] border border-white hover:bg-[#CAFE14] hover:text-[#171818] hover:shadow-[0_0_15px_10px_rgba(255,255,255,0.3)]'
-            } transition-all duration-300 cursor-pointer`}
+              } transition-all duration-300 cursor-pointer`}
             onClick={() => setViewMode('status')}
           >
             Status View
           </Button>
           <Button
             variant={viewMode === 'priority' ? 'default' : 'outline'}
-            className={`${
-              viewMode === 'priority'
+            className={`${viewMode === 'priority'
                 ? 'bg-[#CAFE14] text-[#171818] shadow-[4px_5px_0px_0px_#ffffff] border border-black hover:bg-white hover:text-black hover:shadow-[0_0_15px_10px_rgba(255,255,255,0.3)]'
                 : 'bg-[#CAFE1436] text-[#CAFE14] border border-white hover:bg-[#CAFE14] hover:text-[#171818] hover:shadow-[0_0_15px_10px_rgba(255,255,255,0.3)]'
-            } transition-all duration-300 cursor-pointer`}
+              } transition-all duration-300 cursor-pointer`}
             onClick={() => setViewMode('priority')}
           >
             Priority View
           </Button>
-          <CreateTaskDialog
-            isDialogOpen={isDialogOpen}
-            setIsDialogOpen={setIsDialogOpen}
-            handleCreateTask={handleCreateTask}
-          />
+          
           <Popover open={isCalendarOpen} onOpenChange={setIsCalendarOpen}>
             <PopoverTrigger asChild>
               <Button
                 variant={selectedDateRange.startDate || selectedDateRange.endDate ? 'default' : 'outline'}
-                className={`flex items-center gap-2 ${
-                  selectedDateRange.startDate || selectedDateRange.endDate
+                className={`flex items-center gap-2 ${selectedDateRange.startDate || selectedDateRange.endDate
                     ? 'bg-[#CAFE14] text-[#171818] shadow-[4px_5px_0px_0px_#ffffff] hover:bg-white border border-black hover:text-black hover:shadow-[0_0_15px_10px_rgba(255,255,255,0.3)]'
                     : 'bg-[#CAFE1436] text-[#CAFE14] border border-white hover:bg-[#CAFE14] hover:text-[#171818] hover:shadow-[0_0_15px_10px_rgba(255,255,255,0.3)]'
-                } transition-all duration-300 cursor-pointer h-[36px] text-sm sm:text-base px-3`}
+                  } transition-all duration-300 cursor-pointer h-[36px] text-sm sm:text-base px-3`}
               >
                 <Calendar className="w-4 h-4" />
                 {selectedDateRange.startDate
@@ -189,8 +182,7 @@ export default function TaskFilters({
             <PopoverContent className="bg-[#171818] border border-white shadow-lg p-0 w-auto">
               <DayPicker
                 mode="range"
-            // @ts-expect-error unknown type error
-
+                // @ts-expect-error unknown type error
                 selected={{ from: selectedDateRange.startDate, to: selectedDateRange.endDate }}
                 onSelect={(range) => {
                   setSelectedDateRange({ startDate: range?.from || null, endDate: range?.to || null });
@@ -219,6 +211,11 @@ export default function TaskFilters({
               Clear Dates
             </Button>
           ) : null}
+          <CreateTaskDialog
+            isDialogOpen={isDialogOpen}
+            setIsDialogOpen={setIsDialogOpen}
+            handleCreateTask={handleCreateTask}
+          />
         </div>
       </CardHeader>
       <CardContent className="space-y-2">
@@ -231,11 +228,10 @@ export default function TaskFilters({
           ].map((category) => (
             <Badge
               key={category.label}
-              className={`flex items-center justify-center gap-2 h-[30px] rounded-[12px] border border-white cursor-pointer text-sm sm:text-base ${
-                selectedCategory === category.label
+              className={`flex items-center justify-center gap-2 h-[30px] rounded-[12px] border border-white cursor-pointer text-sm sm:text-base ${selectedCategory === category.label
                   ? 'bg-[#CAFE14] text-[#171818]'
                   : 'bg-[#171818] text-gray-300 hover:bg-[#2a2b2b]'
-              } min-w-[80px] sm:w-[85px] ${category.label === 'Development' ? 'sm:w-[150px]' : category.label === 'Testing' ? 'sm:w-[110px]' : ''}`}
+                } min-w-[80px] sm:w-[85px] ${category.label === 'Development' ? 'sm:w-[150px]' : category.label === 'Testing' ? 'sm:w-[110px]' : ''}`}
               onClick={() => setSelectedCategory(category.label)}
             >
               <span>{category.label}</span>
@@ -254,11 +250,10 @@ export default function TaskFilters({
             ].map((status) => (
               <Badge
                 key={status.label}
-                className={`flex items-center justify-center gap-2 h-[30px] rounded-[12px] border border-white cursor-pointer text-sm sm:text-base ${
-                  selectedStatus === status.label
+                className={`flex items-center justify-center gap-2 h-[30px] rounded-[12px] border border-white cursor-pointer text-sm sm:text-base ${selectedStatus === status.label
                     ? 'bg-[#CAFE14] text-[#171818]'
                     : 'bg-[#171818] text-gray-300 hover:bg-[#2a2b2b]'
-                } min-w-[90px] sm:w-[100px] ${status.label === 'Completed' || status.label === 'In Progress' ? 'sm:w-[140px]' : status.label === 'In Review' ? 'sm:w-[130px]' : status.label === 'On Hold' ? 'sm:w-[120px]' : ''}`}
+                  } min-w-[90px] sm:w-[100px] ${status.label === 'Completed' || status.label === 'In Progress' ? 'sm:w-[140px]' : status.label === 'In Review' ? 'sm:w-[130px]' : status.label === 'On Hold' ? 'sm:w-[120px]' : ''}`}
                 onClick={() => setSelectedStatus(status.label)}
               >
                 <span>{status.label}</span>
@@ -284,11 +279,10 @@ export default function TaskFilters({
             ].map((priority) => (
               <Badge
                 key={priority.label}
-                className={`flex items-center justify-center gap-2 h-[30px] rounded-[12px] border border-white cursor-pointer text-sm sm:text-base ${
-                  selectedPriority === priority.label
+                className={`flex items-center justify-center gap-2 h-[30px] rounded-[12px] border border-white cursor-pointer text-sm sm:text-base ${selectedPriority === priority.label
                     ? 'bg-[#CAFE14] text-[#171818]'
                     : 'bg-[#171818] text-gray-300 hover:bg-[#2a2b2b]'
-                } w-[90px] sm:w-[100px] ${priority.label === 'Medium' ? 'sm:w-[120px]' : priority.label === 'High' ? 'sm:w-[110px]' : ''}`}
+                  } w-[90px] sm:w-[100px] ${priority.label === 'Medium' ? 'sm:w-[120px]' : priority.label === 'High' ? 'sm:w-[110px]' : ''}`}
                 onClick={() => setSelectedPriority(priority.label)}
               >
                 <span>{priority.label}</span>

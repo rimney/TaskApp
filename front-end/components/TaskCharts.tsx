@@ -1,3 +1,5 @@
+'use client';
+
 import { Card, CardHeader, CardTitle, CardDescription } from '../components/ui/card';
 import { Tabs, TabsList, TabsTrigger, TabsContent } from '../components/ui/tabs';
 import {
@@ -9,6 +11,7 @@ import {
 } from '../components/ui/chart';
 import { Bar, BarChart, CartesianGrid, XAxis } from 'recharts';
 import React from 'react';
+import { useDeviceMode } from '@/lib/hooks/useDeviceMode';
 
 interface Task {
   id: number;
@@ -30,6 +33,8 @@ interface TaskChartsProps {
 }
 
 export default function TaskCharts({ tasks }: TaskChartsProps) {
+  const deviceMode = useDeviceMode();
+
   const computeChartData = () => {
     const months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
     const statusData: { [key: string]: number[] } = {
@@ -84,12 +89,16 @@ export default function TaskCharts({ tasks }: TaskChartsProps) {
   const { statusChartData, categoryChartData } = computeChartData();
 
   return (
-    <Card className=" my-4 bg-[#171818] border border-white shadow-lg">
+    <Card className="my-4 bg-[#171818] border border-white shadow-lg">
       <CardHeader>
         <CardTitle className="text-[#CAFE14]">Statistics</CardTitle>
         <CardDescription className="text-gray-300">Preview Project Statistics Here</CardDescription>
       </CardHeader>
-      <div className="w-full min-h-[600px] py-4 flex items-center justify-center">
+      <div
+        className={`w-full py-4 flex items-center justify-center ${
+          deviceMode === 'mobile' ? 'h-auto' : 'min-h-[600px]'
+        }`}
+      >
         <Tabs defaultValue="status" className="w-full max-w-[1300px] px-4 sm:px-0">
           <TabsList className="grid w-full grid-cols-2 rounded-[13px] bg-[#171818]">
             <TabsTrigger
@@ -118,7 +127,13 @@ export default function TaskCharts({ tasks }: TaskChartsProps) {
                     tickFormatter={(value) => value}
                     tick={{ fontSize: '12px', dy: 5, fill: '#CAFE14' }}
                   />
-                  <ChartTooltip content={<ChartTooltipContent className="bg-[#171818] border-white text-gray-100" />} />
+                  <ChartTooltip
+                    content={
+                      <ChartTooltipContent
+                        className="bg-[#171818] border-white text-white [&>div]:text-white [&>div>span]:text-white"
+                      />
+                    }
+                  />
                   <ChartLegend content={<ChartLegendContent />} />
                   <Bar dataKey="In_Progress" fill="var(--color-In_Progress)" radius={4} />
                   <Bar dataKey="In_Review" fill="var(--color-In_Review)" radius={4} />
@@ -128,7 +143,7 @@ export default function TaskCharts({ tasks }: TaskChartsProps) {
               </ChartContainer>
             </div>
           </TabsContent>
-          <TabsContent value="category" className="bg-[#171818] rounded-lg shadow-lg">
+          <TabsContent value="category" className="bg-[#171818] rounded-lg shadow-lg [&>div]:text-white [&>div>span]:text-white">
             <div className="w-full h-[300px] sm:h-[450px] mt-6 sm:mt-10 flex items-center justify-center">
               <ChartContainer config={categoryChartConfig} className="w-full max-w-[950px] text-gray-100">
                 <BarChart accessibilityLayer data={categoryChartData}>
@@ -141,7 +156,14 @@ export default function TaskCharts({ tasks }: TaskChartsProps) {
                     tickFormatter={(value) => value}
                     tick={{ fontSize: '12px', dy: 5, fill: '#CAFE14' }}
                   />
-                  <ChartTooltip content={<ChartTooltipContent className="bg-[#171818] border-white text-gray-100" />} />
+                  <ChartTooltip
+                  
+                    content={
+                      <ChartTooltipContent
+                        className="bg-[#171818] border-white text-white [&>div]:text-white [&>div>span]:text-white"
+                      />
+                    }
+                  />
                   <ChartLegend content={<ChartLegendContent />} />
                   <Bar dataKey="Development" fill="var(--color-Development)" radius={4} />
                   <Bar dataKey="Testing" fill="var(--color-Testing)" radius={4} />

@@ -324,7 +324,7 @@ const handleDeleteConfirm = async () => {
 
       ref={drag}
       style={style}
-      className={`w-full ${deviceMode === 'desktop' ? 'min-w-[306px]' : 'min-w-[330px]'} rounded-[13px] h-[${deviceMode === 'mobile' ? '120px' : '130px'}] border flex flex-col bg-[#171818] touch-none shadow-lg`}
+      className={`w-full ${deviceMode === 'desktop' ? 'min-w-[306px]' : 'min-w-[316px]'} rounded-[13px] h-[${deviceMode === 'mobile' ? '120px' : '130px'}] border flex flex-col bg-[#171818] touch-none shadow-lg`}
     >
       <div className="w-full h-[40px] flex flex-row">
         <div className="w-[80%] flex items-center">
