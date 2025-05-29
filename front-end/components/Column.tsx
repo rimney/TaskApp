@@ -58,6 +58,7 @@ export function Column({ status, color, tasks, moveTask, onEdit, onDelete, isPri
 
   // Combine the drop ref with the div ref
   const setRef = (node: HTMLDivElement | null) => {
+    // @ts-expect-error react 18 : Cannot assign to 'current' because it is a read-only property.ts(2540)
     divRef.current = node;
     drop(node); // Connect the drop target
   };
