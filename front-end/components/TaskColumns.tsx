@@ -4,35 +4,12 @@ import { CardContent, CardFooter } from '@/components/ui/card';
 import { Column } from '@/components/Column';
 import { useDeviceMode } from '@/lib/hooks/useDeviceMode'; // Adjust path as needed
 import React from 'react';
+import { TaskColumnsProps } from '@/types/types';
 
-interface Task {
-  id: number;
-  title: string;
-  priority: 'High' | 'Medium' | 'Low';
-  duedate: string;
-  status: 'In_Progress' | 'In_Review' | 'On_Hold' | 'Completed';
-  category: 'Development' | 'Testing' | 'Bugs';
-  description: {
-    summary: string;
-    details: string;
-    acceptanceCriteria: string[];
-    notes: string;
-  };
-}
 
-interface ColumnType {
-  label: string;
-  color: string;
-}
 
-interface TaskColumnsProps {
-  columns: ColumnType[];
-  tasks: Task[];
-  viewMode: 'status' | 'priority';
-  moveTask: (taskId: number, newValue: string) => void;
-  onEdit: (task: Task) => Promise<void>;
-  onDelete: (taskId: number) => Promise<void>;
-}
+
+
 
 export default function TaskColumns({ columns, tasks, viewMode, moveTask, onEdit, onDelete }: TaskColumnsProps) {
   const deviceMode = useDeviceMode();

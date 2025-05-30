@@ -35,20 +35,8 @@ import { Task } from '../types/tasks';
 import { toast } from 'sonner';
 import React from 'react';
 import { useDeviceMode } from '@/lib/hooks/useDeviceMode';
+import { TaskCardProps } from '@/types/types';
 
-interface TaskCardProps {
-  title: string;
-  priority: 'High' | 'Medium' | 'Low';
-  duedate: string;
-  status: 'In_Progress' | 'In_Review' | 'On_Hold' | 'Completed';
-  category: 'Development' | 'Testing' | 'Bugs';
-  id: number;
-  moveTask: (id: number, status: string) => void;
-  isDragging?: boolean;
-  description: Task['description'];
-  onEdit: (task: Task) => Promise<void>;
-  onDelete: (id: number) => Promise<void>;
-}
 
 export function TaskCard({
   title,
@@ -104,55 +92,50 @@ export function TaskCard({
   });
 
   const style = {
-    opacity: isTaskDragging ? 0 : 1,
-    transform: isDragging || isTaskDragging ? 'scale(1.05)' : 'none',
-    boxShadow: isDragging || isTaskDragging ? '0 4px 12px rgba(255, 255, 255, 0.3)' : 'none',
+    opacity: isTaskDragging ? 0.3 : 1,
     border: isDragging || isTaskDragging ? '2px solid #CAFE14' : '1px solid white',
     cursor: 'move',
-    transition: 'transform 0.2s ease, box-shadow 0.2s ease',
+    transition: 'all 0.3s ease', // Smooth transition for all properties
   };
 
-const handleEditSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
-  e.preventDefault();
-  const formData = new FormData(e.currentTarget);
-  const updatedTask: Task = {
-    id,
-    title: formData.get('title') as string,
-    priority: formData.get('priority') as 'High' | 'Medium' | 'Low',
-    duedate: formData.get('duedate') as string,
-            // @ts-expect-error unknown type error
-
-    status: (formData.get('status') as string).replace(' ', '_') as 'In_Progress' | 'In_Review' | 'On_Hold' | 'Completed',
-    category: formData.get('category') as 'Development' | 'Testing' | 'Bugs',
-    description: {
-      summary: formData.get('summary') as string,
-      details: formData.get('details') as string,
-      acceptanceCriteria: ((formData.get('acceptanceCriteria') as string) || '')
-        .split('\n')
-        .filter((item) => item.trim() !== ''),
-      notes: (formData.get('notes') as string) || '',
-    },
+  const handleEditSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+    const formData = new FormData(e.currentTarget);
+    const updatedTask: Task = {
+      id,
+      title: formData.get('title') as string,
+      priority: formData.get('priority') as 'High' | 'Medium' | 'Low',
+      duedate: formData.get('duedate') as string,
+      status: (formData.get('status') as string).replace(' ', '_') as 'In_Progress' | 'In_Review' | 'On_Hold' | 'Completed',
+      category: formData.get('category') as 'Development' | 'Testing' | 'Bugs',
+      description: {
+        summary: formData.get('summary') as string,
+        details: formData.get('details') as string,
+        acceptanceCriteria: ((formData.get('acceptanceCriteria') as string) || '')
+          .split('\n')
+          .filter((item) => item.trim() !== ''),
+        notes: (formData.get('notes') as string) || '',
+      },
+    };
+    try {
+      await onEdit(updatedTask);
+      setIsEditDialogOpen(false);
+    } catch (error: unknown) {
+      const errorMessage = error instanceof Error ? error.message : 'Unknown error';
+      toast.error(errorMessage || 'Failed to edit task');
+    }
   };
-  try {
-    await onEdit(updatedTask);
-    setIsEditDialogOpen(false);
-  } catch (error: unknown) { // Changed from Error to unknown
-    const errorMessage = error instanceof Error ? error.message : 'Unknown error';
-    toast.error(errorMessage || 'Failed to edit task');
-  }
-};
 
-const handleDeleteConfirm = async () => {
-  try {
-    await onDelete(id);
-    setIsDeleteDialogOpen(false);
-    toast.success('Task deleted successfully');
-  } 
-  catch (error: unknown) { // Changed from Error to unknown
-    const errorMessage = error instanceof Error ? error.message : 'Unknown error';
-    toast.error(errorMessage || 'Failed to delete task');
-  }
-};
+  const handleDeleteConfirm = async () => {
+    try {
+      await onDelete(id);
+      setIsDeleteDialogOpen(false);
+      toast.success('Task deleted successfully');
+    } catch (error: unknown) {
+      const errorMessage = error instanceof Error ? error.message : 'Unknown error';
+      toast.error(errorMessage || 'Failed to delete task');
+    }
+  };
 
   const EditForm = () => (
     <form onSubmit={handleEditSubmit} className="space-y-4">
@@ -320,11 +303,9 @@ const handleDeleteConfirm = async () => {
 
   return (
     <div
-            // @ts-expect-error unknown type error
-
       ref={drag}
       style={style}
-      className={`w-full ${deviceMode === 'desktop' ? 'min-w-[306px]' : 'min-w-[316px]'} rounded-[13px] h-[${deviceMode === 'mobile' ? '120px' : '130px'}] border flex flex-col bg-[#171818] touch-none shadow-lg`}
+      className={`w-full ${deviceMode === 'desktop' ? 'w-full' : 'w-full'} rounded-[13px] h-[${deviceMode === 'mobile' ? '120px' : '130px'}] border flex flex-col bg-[#171818] touch-none shadow-lg`}
     >
       <div className="w-full h-[40px] flex flex-row">
         <div className="w-[80%] flex items-center">
@@ -354,8 +335,6 @@ const handleDeleteConfirm = async () => {
                   title,
                   priority,
                   duedate,
-            // @ts-expect-error unknown type error
-
                   status: status.replace('_', ' '),
                   category,
                   description,

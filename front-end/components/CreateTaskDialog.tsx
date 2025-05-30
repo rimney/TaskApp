@@ -21,36 +21,16 @@ import { Label } from '../components/ui/label';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '../components/ui/select';
 import { Textarea } from '../components/ui/textarea';
 import { BadgePlus } from 'lucide-react';
-import { useState, useEffect } from 'react';
+import { useState } from 'react';
 import React from 'react';
+import { useDeviceMode } from '@/lib/hooks/useDeviceMode';
+import { CreateTaskDialogProps, CreateTaskFormProps } from '@/types/types';
 
-const useMediaQuery = (query: string) => {
-  const [matches, setMatches] = useState(false);
 
-  useEffect(() => {
-    const media = window.matchMedia(query);
-    setMatches(media.matches);
-
-    const listener = () => setMatches(media.matches);
-    media.addEventListener('change', listener);
-    return () => media.removeEventListener('change', listener);
-  }, [query]);
-
-  return matches;
-};
-
-interface CreateTaskDialogProps {
-  isDialogOpen: boolean;
-  setIsDialogOpen: (value: boolean) => void;
-  handleCreateTask: (e: React.FormEvent<HTMLFormElement>) => void;
-}
-
-interface CreateTaskFormProps {
-  handleCreateTask: (e: React.FormEvent<HTMLFormElement>) => void;
-}
 
 function CreateTaskForm({ handleCreateTask }: CreateTaskFormProps) {
   const [loading, setLoading] = useState(false);
+  const deviceMode = useDeviceMode();
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     setLoading(true);
@@ -63,7 +43,7 @@ function CreateTaskForm({ handleCreateTask }: CreateTaskFormProps) {
 
   return (
     <form onSubmit={handleSubmit} className="space-y-4">
-      <div className="grid grid-cols-1 gap-4 sm:gap-6">
+      <div className={`grid grid-cols-1 ${deviceMode === 'desktop' ? 'sm:grid-cols-2' : ''} gap-4 sm:gap-6`}>
         <div className="space-y-4">
           <div>
             <Label className="mb-2 text-sm sm:text-base text-[#CAFE14]" htmlFor="title">
@@ -128,7 +108,7 @@ function CreateTaskForm({ handleCreateTask }: CreateTaskFormProps) {
               </SelectContent>
             </Select>
           </div>
-          <div className="w-full">
+          <div className={`w-full ${deviceMode === 'desktop' ? 'sm:w-[140px]' : ''}`}>
             <Label className="mb-2 text-sm sm:text-base text-[#CAFE14]" htmlFor="duedate">
               Due Date
             </Label>
@@ -148,7 +128,7 @@ function CreateTaskForm({ handleCreateTask }: CreateTaskFormProps) {
               Summary
             </Label>
             <Textarea
-              className="max-h-[100px] overflow-scroll border-white bg-[#171818] text-gray-100 placeholder-gray-400 focus:ring-white focus:border-white"
+              className="max-h-[100px] sm:max-h-[120px] overflow-scroll border-white bg-[#171818] text-gray-100 placeholder-gray-400 focus:ring-white focus:border-white"
               id="summary"
               name="summary"
               required
@@ -160,7 +140,7 @@ function CreateTaskForm({ handleCreateTask }: CreateTaskFormProps) {
               Details
             </Label>
             <Textarea
-              className="max-h-[100px] overflow-scroll border-white bg-[#171818] text-gray-100 placeholder-gray-400 focus:ring-white focus:border-white"
+              className="max-h-[100px] sm:max-h-[120px] overflow-scroll border-white bg-[#171818] text-gray-100 placeholder-gray-400 focus:ring-white focus:border-white"
               id="details"
               name="details"
               required
@@ -172,7 +152,7 @@ function CreateTaskForm({ handleCreateTask }: CreateTaskFormProps) {
               Acceptance Criteria (one per line)
             </Label>
             <Textarea
-              className="max-h-[100px] overflow-scroll border-white bg-[#171818] text-gray-100 placeholder-gray-400 focus:ring-white focus:border-white"
+              className="max-h-[100px] sm:max-h-[120px] overflow-scroll border-white bg-[#171818] text-gray-100 placeholder-gray-400 focus:ring-white focus:border-white"
               id="acceptanceCriteria"
               name="acceptanceCriteria"
               placeholder="Enter each criterion on a new line"
@@ -195,7 +175,7 @@ function CreateTaskForm({ handleCreateTask }: CreateTaskFormProps) {
       <div className="w-full flex justify-center">
         <Button
           type="submit"
-          className="w-[120px] border border-black bg-[#CAFE14] cursor-pointer text-[#171818] shadow-[4px_5px_0px_0px_#ffffff] hover:bg-white hover:text-black hover:shadow-[0_0_15px_10px_rgba(255,255,255,0.3)] transition-all duration-300"
+          className="w-[120px] bg-[#CAFE14] border border-black cursor-pointer text-[#171818] shadow-[4px_5px_0px_0px_#ffffff] hover:bg-white hover:text-black hover:shadow-[0_0_15px_10px_rgba(255,255,255,0.3)] transition-all duration-300"
           disabled={loading}
         >
           {loading ? 'Adding task...' : 'Create Task'}
@@ -210,14 +190,14 @@ export default function CreateTaskDialog({
   setIsDialogOpen,
   handleCreateTask,
 }: CreateTaskDialogProps) {
-  const isMobile = useMediaQuery('(max-width: 640px)');
+  const deviceMode = useDeviceMode();
 
-  return isMobile ? (
+  return deviceMode === 'mobile' ? (
     <Sheet open={isDialogOpen} onOpenChange={setIsDialogOpen}>
       <SheetTrigger asChild>
         <Button
-          className={`bg-[#CAFE1436] text-center ${isMobile ? 'bg-[#CAFE14]' : ''} text-black hover:bg-[#CAFE14] hover:text-[#171818] hover:shadow-[0_0_15px_10px_rgba(255,255,255,0.3)] transition-all duration-300`}
-        > 
+          className={`bg-[#CAFE1436] text-center ${deviceMode === 'mobile' ? 'bg-[#CAFE14]' : ''} text-black hover:bg-[#CAFE14] hover:text-[#171818] hover:shadow-[0_0_15px_10px_rgba(255,255,255,0.3)] transition-all duration-300`}
+        >
           Create Task <BadgePlus />
         </Button>
       </SheetTrigger>
@@ -245,7 +225,7 @@ export default function CreateTaskDialog({
           Create Task <BadgePlus />
         </Button>
       </DialogTrigger>
-      <DialogContent className="w-[95vw] max-w-[900px] sm:max-w-[700px] md:max-w-[900px] bg-[#171818] border border-white shadow-lg [&>button]:text-[#CAFE14] [&>button]:hover:text-white [&>button]:hover:bg-[#2a2b2b]">
+      <DialogContent className={`w-[95vw] max-w-[900px] ${deviceMode === 'desktop' ? 'sm:max-w-[700px] md:max-w-[900px]' : ''} bg-[#171818] border border-white shadow-lg [&>button]:text-[#CAFE14] [&>button]:hover:text-white [&>button]:hover:bg-[#2a2b2b]`}>
         <DialogHeader>
           <DialogTitle className="text-[#CAFE14]">Create New Task</DialogTitle>
         </DialogHeader>

@@ -47,18 +47,18 @@ export function DragLayer() {
       const adjustedX = x + scrollX;
       const adjustedY = y + scrollY;
 
-      console.log('Drag coordinates:', { x: adjustedX, y: adjustedY });
+      // console.log('Drag coordinates:', { x: adjustedX, y: adjustedY });
 
       // Check columns first
       for (const column of columns) {
         const rect = column.getBoundingClientRect();
-        console.log('Column rect:', {
-          id: column.getAttribute('data-column'),
-          left: rect.left + scrollX,
-          right: rect.right + scrollX,
-          top: rect.top + scrollY,
-          bottom: rect.bottom + scrollY,
-        });
+        // console.log('Column rect:', {
+        //   id: column.getAttribute('data-column'),
+        //   left: rect.left + scrollX,
+        //   right: rect.right + scrollX,
+        //   top: rect.top + scrollY,
+        //   bottom: rect.bottom + scrollY,
+        // });
 
         if (
           adjustedX >= rect.left + scrollX &&
@@ -71,13 +71,13 @@ export function DragLayer() {
       }
 
       if (parentContainer) {
-        const rect = parentContainer.getBoundingClientRect();
-        console.log('Parent container rect:', {
-          left: rect.left + scrollX,
-          right: rect.right + scrollX,
-          top: rect.top + scrollY,
-          bottom: rect.bottom + scrollY,
-        });
+        // const rect = parentContainer.getBoundingClientRect();
+        // console.log('Parent container rect:', {
+        //   left: rect.left + scrollX,
+        //   right: rect.right + scrollX,
+        //   top: rect.top + scrollY,
+        //   bottom: rect.bottom + scrollY,
+        // });
         return parentContainer;
       }
 
@@ -92,7 +92,7 @@ export function DragLayer() {
       return;
     }
 
-    console.log('Scrolling container:', scrollContainer.getAttribute('data-column') || 'Parent container');
+    // console.log('Scrolling container:', scrollContainer.getAttribute('data-column') || 'Parent container');
 
     const scroll = () => {
       const rect = scrollContainer.getBoundingClientRect();
@@ -170,7 +170,7 @@ export function DragLayer() {
         zIndex: 10000,
         pointerEvents: 'none',
         width: '100%',
-        maxWidth: '290px',
+        maxWidth: '310px',
       }}
     >
       <TaskCard

@@ -1,22 +1,9 @@
 'use client';
 
 import { Badge } from "@/components/ui/badge";
+import { Task } from "@/types/tasks";
 import { Calendar } from "lucide-react";
 
-interface Task {
-  id: number;
-  title: string;
-  priority: "High" | "Medium" | "Low";
-  duedate: string;
-  status: "In Progress" | "In Review" | "On Hold" | "Completed";
-  category: "Development" | "Testing" | "Bugs";
-  description: {
-    summary: string;
-    details: string;
-    acceptanceCriteria: string[];
-    notes: string;
-  };
-}
 
 export function DescriptionRenderer({ task }: { task: Task }) {
   const { description, priority, status, category, duedate } = task;

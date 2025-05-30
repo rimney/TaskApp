@@ -246,7 +246,7 @@ function ChartTooltipContent({
       </div>
     </div>
   )
-}
+}                                                                                                                                                                                                                                                    
 
 const ChartLegend = RechartsPrimitive.Legend
 

@@ -1,23 +1,11 @@
+import { Task } from '@/types/tasks';
 import axios, { AxiosError } from 'axios';
 // import { Task } from '@/types/task';
 
 const API_URL = `${process.env.NEXT_PUBLIC_BACKEND_API_URL}/tasks`;
 
 
-interface Task {
-    id: number;
-    title: string;
-    priority: 'High' | 'Medium' | 'Low';
-    duedate: string;
-    status: 'In Progress' | 'In Review' | 'On Hold' | 'Completed';
-    category: 'Development' | 'Testing' | 'Bugs';
-    description: {
-      summary: string;
-      details: string;
-      acceptanceCriteria: string[];
-      notes: string;
-    };
-  }
+
 
 export const createTask = async (task: Omit<Task, 'id'>): Promise<Task> => {
   try {
@@ -52,7 +40,7 @@ export const updateTask = async (id: number, task: Partial<Task>): Promise<Task>
 export const deleteTask = async (id: number): Promise<void> => {
   try {
     const response = await axios.delete<Task>(`${API_URL}/${id}`);
-    console.log(response.data)
+    // console.log(response.data)
   } catch (error) {
     const axiosError = error as AxiosError<{ message: string }>;
     throw new Error(axiosError.response?.data?.message || 'Failed to delete task');

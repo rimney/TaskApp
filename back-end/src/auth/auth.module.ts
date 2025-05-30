@@ -1,26 +1,37 @@
 import { Module } from '@nestjs/common';
-import { ConfigModule, ConfigService } from '@nestjs/config';
-import { PassportModule } from '@nestjs/passport'
 import { JwtModule } from '@nestjs/jwt';
-import { JwtAuthGuard } from './guards/jwt.auth.guard';
+import { PassportModule } from '@nestjs/passport';
+import { ConfigModule, ConfigService } from '@nestjs/config';
 import { SupabaseStrategy } from './strategies/supabase.strategy';
+import { JwtAuthGuard } from './guards/jwt.auth.guard';
+import { APP_GUARD } from '@nestjs/core';
 
 @Module({
-    imports: [
-        PassportModule,
-        ConfigModule,
-        JwtModule.registerAsync({
-            useFactory: (configService: ConfigService) => {
-              return {
-                global: true,
-                secret: configService.get<string>('JWT_SECRET'),
-                signOptions: { expiresIn: 40000 },
-              }
-            },
-            inject: [ConfigService],
-          }),
-    ],
-    providers: [JwtAuthGuard, SupabaseStrategy],
-    exports: [JwtAuthGuard, JwtModule]
+  imports: [
+    ConfigModule,
+    PassportModule.register({ defaultStrategy: 'jwt' }),
+    JwtModule.registerAsync({
+      imports: [ConfigModule],
+      useFactory: async (configService: ConfigService) => {
+        const jwtSecret = configService.get<string>('SUPABASE_JWT_SECRET');
+        if (!jwtSecret) {
+          throw new Error('SUPABASE_JWT_SECRET is not defined in environment variables');
+        }
+        return {
+          secret: jwtSecret,
+          signOptions: { expiresIn: '24h' },
+        };
+      },
+      inject: [ConfigService],
+    }),
+  ],
+  providers: [
+    SupabaseStrategy,
+    {
+      provide: APP_GUARD,
+      useClass: JwtAuthGuard, // Apply JwtAuthGuard globally
+    },
+  ],
+  exports: [JwtModule, PassportModule],
 })
 export class AuthModule {}

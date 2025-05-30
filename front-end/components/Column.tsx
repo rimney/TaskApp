@@ -1,35 +1,20 @@
+'use client';
+
 import { useDrop, DropTargetMonitor } from 'react-dnd';
 import { TaskCard } from './TaskCard';
 import { Task } from '@/types/tasks';
 import React, { useRef } from 'react';
 import { useDeviceMode } from '@/lib/hooks/useDeviceMode';
 import { hexToRgba } from '@/lib/utils/colorUtils';
+import { ColumnProps, DragItem } from '@/types/types';
 
-interface DragItem {
-  id: number;
-  status: string;
-  priority: string;
-  title: string;
-  duedate: string;
-  category: string;
-  description: Task['description'];
-}
 
-interface ColumnProps {
-  status: string;
-  color: string;
-  tasks: Task[];
-  moveTask: (taskId: number, newValue: string) => void;
-  onEdit: (task: Task) => Promise<void>;
-  onDelete: (id: number) => Promise<void>;
-  isPriorityView?: boolean;
-}
+
 
 export function Column({ status, color, tasks, moveTask, onEdit, onDelete, isPriorityView }: ColumnProps) {
   const deviceMode = useDeviceMode();
-  const divRef = useRef<HTMLDivElement>(null); // Create a ref for the div
+  const divRef = useRef<HTMLDivElement>(null);
 
-  // Define valid transitions for status view
   const validTransitions: { [key: string]: string[] } = {
     'In Progress': ['In Review', 'Completed', 'On Hold'],
     'In Review': ['Completed', 'On Hold'],
@@ -41,10 +26,8 @@ export function Column({ status, color, tasks, moveTask, onEdit, onDelete, isPri
     accept: 'TASK',
     canDrop: (item: DragItem) => {
       if (isPriorityView) {
-        // Allow all drops in priority view
         return true;
       }
-      // In status view, check if the transition is valid
       const currentStatus = item.status.replace('_', ' ');
       const allowedStatuses = validTransitions[currentStatus] || [];
       return allowedStatuses.includes(status);
@@ -56,11 +39,9 @@ export function Column({ status, color, tasks, moveTask, onEdit, onDelete, isPri
     }),
   });
 
-  // Combine the drop ref with the div ref
   const setRef = (node: HTMLDivElement | null) => {
-    // @ts-expect-error react 18 : Cannot assign to 'current' because it is a read-only property.ts(2540)
     divRef.current = node;
-    drop(node); // Connect the drop target
+    drop(node);
   };
 
   const priorityColors = {
@@ -91,7 +72,7 @@ export function Column({ status, color, tasks, moveTask, onEdit, onDelete, isPri
   return (
     <div
       ref={setRef}
-      className={`flex-1 ${deviceMode === 'mobile' ? 'min-w-[100%]' : 'min-w-[305px]'} min-h-${
+      className={`flex-1 ${deviceMode === 'mobile' ? 'min-w-[100%]' : 'w-full bg-red-400'} min-h-${
         deviceMode === 'mobile' ? 'auto' : 'screen'
       } flex justify-start items-center overflow-x-hidden flex-col rounded shadow-lg overflow-y-auto`}
       style={{ backgroundColor: getBackgroundColor() }}
@@ -100,13 +81,17 @@ export function Column({ status, color, tasks, moveTask, onEdit, onDelete, isPri
       <h2 className="text-lg font-semibold mb-2 text-[#CAFE14]" style={{ color }}>
         {status} ({tasks.length})
       </h2>
-      <div className="space-y-2 p-4">
+      <div className="space-y-2 p-1 w-full" style={{ transition: 'all 0.3s ease' }}>
         {tasks.map((task) => (
           <TaskCard
             key={task.id}
-            {...task}
-            // @ts-expect-error unknown type error
-            status={task.status.replace(' ', '_') as Task['status']}
+            id={task.id}
+            title={task.title}
+            priority={task.priority}
+            duedate={task.duedate}
+            status={task.status}
+            category={task.category}
+            description={task.description}
             moveTask={moveTask}
             onEdit={onEdit}
             onDelete={onDelete}

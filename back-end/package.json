@@ -5,9 +5,8 @@
   "author": "",
   "private": true,
   "license": "UNLICENSED",
-  "scripts": 
-  {
-    "postinstall": "npx prisma generate",
+  "scripts": {
+    "prebuild": "npx prisma generate",
     "build": "nest build",
     "format": "prettier --write \"src/**/*.ts\" \"test/**/*.ts\"",
     "start": "nest start",

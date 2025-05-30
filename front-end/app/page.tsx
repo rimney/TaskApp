@@ -8,7 +8,6 @@ import { HTML5Backend } from 'react-dnd-html5-backend';
 import { TouchBackend } from 'react-dnd-touch-backend';
 import { Tabs, TabsList, TabsTrigger, TabsContent } from '@/components/ui/tabs';
 import { Toaster } from '@/components/ui/sonner';
-import { toast } from 'sonner';
 import useAxiosAuth from '@/lib/hooks/useAxiosAuth';
 import { getSupabaseFrontendClient } from '@/lib/client';
 import DashboardCards from '@/components/DashboardCards';
@@ -17,16 +16,15 @@ import TaskFilters from '@/components/TaskFilters';
 import TaskColumns from '@/components/TaskColumns';
 import LogoutButton from '@/components/LogoutButton';
 import { DragLayer } from '@/components/DragLayer';
+import { Task, StatusCounts, PriorityCounts, DateRange } from '@/types/types';
+import { fetchTasks, handleCreateTask, handleEditTask, handleDeleteTask, moveTask } from '@/types/taskUtils';
 
-// Define the transition to switch between HTML5 and Touch backends
 const HTML5toTouch = {
   backends: [
     {
       id: 'html5',
       backend: HTML5Backend,
-      transition: createTransition('mousedown', (event) => 
-        // @ts-expect-error Property 'buttons' does not exist on type 'Event'.ts(2339)
-        !!event.buttons),
+      transition: createTransition('mousedown', (event) => !!event.buttons),
     },
     {
       id: 'touch',
@@ -36,41 +34,6 @@ const HTML5toTouch = {
     },
   ],
 };
-
-interface Task {
-  id: number;
-  title: string;
-  priority: 'High' | 'Medium' | 'Low';
-  duedate: string;
-  status: 'In_Progress' | 'In_Review' | 'On_Hold' | 'Completed';
-  category: 'Development' | 'Testing' | 'Bugs';
-  description: {
-    summary: string;
-    details: string;
-    acceptanceCriteria: string[];
-    notes: string;
-  };
-}
-
-interface StatusCounts {
-  All: number;
-  Completed: number;
-  'In Progress': number;
-  'In Review': number;
-  'On Hold': number;
-}
-
-interface PriorityCounts {
-  All: number;
-  High: number;
-  Medium: number;
-  Low: number;
-}
-
-interface DateRange {
-  startDate: Date | null;
-  endDate: Date | null;
-}
 
 export default function Home() {
   const [tasks, setTasks] = useState<Task[]>([]);
@@ -85,158 +48,9 @@ export default function Home() {
   const supabase = getSupabaseFrontendClient();
   const axiosAuth = useAxiosAuth();
 
-  // Check session and validate token
   useEffect(() => {
-    const checkSession = async () => {
-      const { data } = await supabase.auth.getSession();
-      console.log('Session:', data);
-
-      if (!data.session) {
-        router.push('/login');
-        return;
-      }
-
-      try {
-        const response = await axiosAuth.get(`${process.env.NEXT_PUBLIC_BACKEND_API_URL}/protected`);
-        console.log('Token validation response:', response.data);
-        const taskResponse = await axiosAuth.get('/tasks');
-        taskResponse.data.map((task: Task) => {
-          task.duedate = task.duedate.split('T')[0];
-        });
-        setTasks(taskResponse.data);
-        toast.success('Tasks fetched successfully!');
-      } catch (error: unknown) { 
-        const errorMessage = error instanceof Error ? error.message : 'Unknown error';
-        console.error('Create task error:', errorMessage);
-        toast.error(errorMessage || 'Failed to fetch tasks');
-        router.push('/login');
-      } finally {
-        setIsLoading(false);
-      }
-    };
-    checkSession();
+    fetchTasks(axiosAuth, supabase, router, setTasks, setIsLoading);
   }, [router, supabase, axiosAuth]);
-
-  const handleCreateTask = async (e: React.FormEvent<HTMLFormElement>) => {
-    e.preventDefault();
-    const formData = new FormData(e.currentTarget);
-    try {
-      const {
-        title,
-        priority = 'Medium',
-        summary = '',
-        duedate = '',
-        status = 'In_Progress',
-        category = 'Development',
-        details = '',
-        acceptanceCriteria = '',
-        notes = '',
-      } = Object.fromEntries(formData);
-      const newTask: Omit<Task, 'id'> = {
-        title: title as string,
-        priority: priority as 'High' | 'Medium' | 'Low',
-        duedate: duedate as string,
-        status: (status as string).replace(' ', '_') as Task['status'],
-        category: category as 'Development' | 'Testing' | 'Bugs',
-        description: {
-          summary: summary as string,
-          details: details as string,
-          acceptanceCriteria: (acceptanceCriteria as string).split('\n').filter((item) => item.trim() !== ''),
-          notes: notes as string,
-        },
-      };
-      const response = await axiosAuth.post('/tasks', newTask);
-      setTasks((prev) => [...prev, response.data]);
-      setIsDialogOpen(false);
-      toast.success(`Task "${newTask.title}" created successfully!`);
-    } catch (error: unknown) { // Changed from Error to unknown
-      const errorMessage = error instanceof Error ? error.message : 'Unknown error';
-      console.error('Create task error:', errorMessage);
-      toast.error(errorMessage || 'Failed to create task');
-    }
-  };
-  const handleEditTask = async (updatedTask: Task) => {
-    try {
-      const payload = {
-        ...updatedTask,
-        status: updatedTask.status.replace(' ', '_') as Task['status'],
-      };
-      const response = await axiosAuth.patch(`/tasks/${updatedTask.id}`, payload);
-      setTasks((prev) =>
-        prev.map((t) => (t.id === updatedTask.id ? response.data : t))
-      );
-      toast.success(`Task "${updatedTask.title}" updated successfully!`);
-    } catch (error: unknown) { // Changed from Error to unknown
-      const errorMessage = error instanceof Error ? error.message : 'Unknown error';
-      console.error('Edit task error:', errorMessage);
-      toast.error(errorMessage || 'Failed to update task');
-    }
-  };
-  const handleDeleteTask = async (taskId: number) => {
-    try {
-      const task = tasks.find((t) => t.id === taskId);
-      await axiosAuth.delete(`/tasks/${taskId}`);
-      setTasks((prev) => prev.filter((t) => t.id !== taskId));
-      toast.success(`Task "${task?.title || taskId}" deleted successfully!`);
-    } catch (error: unknown) { // Changed from Error to unknown
-      const errorMessage = error instanceof Error ? error.message : 'Unknown error';
-      console.error('Delete task error:', errorMessage);
-      toast.error(errorMessage || 'Failed to delete task');
-    }
-  };
-  const moveTask = async (taskId: number, newValue: string) => {
-    const taskToUpdate = tasks.find((task) => task.id === taskId);
-    if (!taskToUpdate) {
-      toast.error('Task not found');
-      return;
-    }
-
-    const currentValue = viewMode === 'status' ? taskToUpdate.status.replace('_', ' ') : taskToUpdate.priority;
-    if (currentValue === newValue) {
-      console.log('Task dropped in the same column, no action taken.');
-      return;
-    }
-
-    const validTransitions: { [key: string]: string[] } = {
-      'In Progress': ['In Review', 'Completed', 'On Hold'],
-      'In Review': ['Completed', 'On Hold'],
-      'On Hold': ['In Progress', 'In Review', 'Completed'],
-      'Completed': ['In Progress', 'In Review'],
-    };
-
-    if (viewMode === 'status') {
-      const currentStatus = taskToUpdate.status.replace('_', ' ');
-      const allowedStatuses = validTransitions[currentStatus] || [];
-      if (!allowedStatuses.includes(newValue)) {
-        toast.error(`Invalid transition: Cannot move from ${currentStatus} to ${newValue}`);
-        return;
-      }
-    }
-
-    const updatedTask: Task = {
-      ...taskToUpdate,
-      ...(viewMode === 'status'
-        ? { status: newValue.replace(' ', '_') as Task['status'] }
-        : { priority: newValue as Task['priority'] }),
-    };
-
-    try {
-      const payload = {
-        ...updatedTask,
-        status: updatedTask.status.replace(' ', '_') as Task['status'],
-      };
-      await axiosAuth.patch(`/tasks/${taskId}`, payload);
-      setTasks((prev) =>
-        prev.map((t) => (t.id === taskId ? updatedTask : t))
-      );
-      const newValueDisplay = viewMode === 'status' ? newValue : newValue;
-      toast.success(`Task "${taskToUpdate.title}" moved to ${newValueDisplay}`);
-    } catch (error: unknown) {
-      const errorMessage = error instanceof Error ? error.message : 'Unknown error';
-      console.error('Delete task error:', errorMessage);
-      toast.error(errorMessage || 'Failed to Move task');
-    }
-  };
 
   const filteredTasks = tasks.filter((task) => {
     const matchesCategory = selectedCategory === 'All' || task.category === selectedCategory;
@@ -250,7 +64,6 @@ export default function Home() {
         const taskDate = new Date(task.duedate);
         const startDate = new Date(selectedDateRange.startDate!);
         const endDate = new Date(selectedDateRange.endDate!);
-        // Ensure dates are compared without time components
         taskDate.setHours(0, 0, 0, 0);
         startDate.setHours(0, 0, 0, 0);
         endDate.setHours(0, 0, 0, 0);
@@ -297,7 +110,7 @@ export default function Home() {
         <div className="relative flex flex-col items-center justify-center w-full max-w-md p-6 rounded-lg">
           <div className="flex items-center space-x-3">
             <h2 className="text-[#CAFE14] text-2xl font-semibold animate-pulse">
-              Loading tasks...
+              Authenticating ...
             </h2>
           </div>
         </div>
@@ -314,7 +127,7 @@ export default function Home() {
           <TabsList className="grid w-full rounded-[13px] grid-cols-2 bg-[#171818]">
             <TabsTrigger
               value="dashboard"
-              className="text-gray-300 cursor-pointer data-[state=active]:text-[black] data-[state=inactive]:text-[#CAFE14] data-[state=active]:bg-[#CAFE14] data-[state=active]:border data-[state=active]:border-black"
+              className="text-gray-300 cursor-pointer data-[state=active]:text-[black] data-[state=inactive]:text-[#CAFE14] data-[state=active]:bg-[#CAFE14] data-[state=active]:border data-[state=active*:border-black"
             >
               Dashboard
             </TabsTrigger>
@@ -345,16 +158,16 @@ export default function Home() {
               priorityCounts={priorityCounts}
               isDialogOpen={isDialogOpen}
               setIsDialogOpen={setIsDialogOpen}
-              handleCreateTask={handleCreateTask}
+              handleCreateTask={(e) => handleCreateTask(e, axiosAuth, setTasks, setIsDialogOpen)}
             />
             <div className="overflow-y-auto max-h-[70vh]" data-scroll-container="tasks-parent">
               <TaskColumns
                 columns={columns}
                 tasks={filteredTasks}
                 viewMode={viewMode}
-                moveTask={moveTask}
-                onEdit={handleEditTask}
-                onDelete={handleDeleteTask}
+                moveTask={(taskId, newValue) => moveTask(taskId, newValue, tasks, viewMode, axiosAuth, setTasks)}
+                onEdit={(task) => handleEditTask(task, axiosAuth, setTasks)}
+                onDelete={(taskId) => handleDeleteTask(taskId, tasks, axiosAuth, setTasks)}
               />
             </div>
           </TabsContent>

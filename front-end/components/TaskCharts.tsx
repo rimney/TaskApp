@@ -12,25 +12,10 @@ import {
 import { Bar, BarChart, CartesianGrid, XAxis } from 'recharts';
 import React from 'react';
 import { useDeviceMode } from '@/lib/hooks/useDeviceMode';
+import { TaskChartsProps } from '@/types/types';
 
-interface Task {
-  id: number;
-  title: string;
-  priority: 'High' | 'Medium' | 'Low';
-  duedate: string;
-  status: 'In_Progress' | 'In_Review' | 'On_Hold' | 'Completed';
-  category: 'Development' | 'Testing' | 'Bugs';
-  description: {
-    summary: string;
-    details: string;
-    acceptanceCriteria: string[];
-    notes: string;
-  };
-}
 
-interface TaskChartsProps {
-  tasks: Task[];
-}
+
 
 export default function TaskCharts({ tasks }: TaskChartsProps) {
   const deviceMode = useDeviceMode();

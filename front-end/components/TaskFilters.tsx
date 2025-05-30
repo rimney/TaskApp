@@ -10,44 +10,9 @@ import { DayPicker } from 'react-day-picker';
 import 'react-day-picker/dist/style.css';
 import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
 import { format } from 'date-fns';
+import { TaskFiltersProps } from '@/types/types';
 
-interface StatusCounts {
-  All: number;
-  Completed: number;
-  'In Progress': number;
-  'In Review': number;
-  'On Hold': number;
-}
 
-interface PriorityCounts {
-  All: number;
-  High: number;
-  Medium: number;
-  Low: number;
-}
-
-interface DateRange {
-  startDate: Date | null;
-  endDate: Date | null;
-}
-
-interface TaskFiltersProps {
-  selectedCategory: string;
-  setSelectedCategory: (value: string) => void;
-  selectedStatus: string;
-  setSelectedStatus: (value: string) => void;
-  selectedPriority: string;
-  setSelectedPriority: (value: string) => void;
-  selectedDateRange: DateRange;
-  setSelectedDateRange: (range: DateRange) => void;
-  viewMode: 'status' | 'priority';
-  setViewMode: (value: 'status' | 'priority') => void;
-  statusCounts: StatusCounts;
-  priorityCounts: PriorityCounts;
-  isDialogOpen: boolean;
-  setIsDialogOpen: (value: boolean) => void;
-  handleCreateTask: (e: React.FormEvent<HTMLFormElement>) => void;
-}
 
 export default function TaskFilters({
   selectedCategory,

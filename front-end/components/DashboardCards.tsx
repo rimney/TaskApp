@@ -1,18 +1,10 @@
 import React from 'react';
 import { Card, CardHeader, CardTitle, CardDescription } from '../components/ui/card';
 import { useDeviceMode } from '@/lib/hooks/useDeviceMode'; // Adjust path if needed
+import {  DashboardCardsProps} from '@/types/types';
 
-interface StatusCounts {
-  All: number;
-  Completed: number;
-  'In Progress': number;
-  'In Review': number;
-  'On Hold': number;
-}
 
-interface DashboardCardsProps {
-  statusCounts: StatusCounts;
-}
+
 
 export default function DashboardCards({ statusCounts }: DashboardCardsProps) {
   const deviceMode = useDeviceMode(); // Use the hook to get device mode
