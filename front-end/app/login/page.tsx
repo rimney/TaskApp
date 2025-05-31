@@ -29,7 +29,7 @@ export default function LoginPage() {
         if (error.message.includes('Invalid login credentials')) {
           toast.error('Wrong credentials');
         } else {
-          toast.error(error.message);
+          toast.error("Wrong credentials");
         }
         return;
       }
