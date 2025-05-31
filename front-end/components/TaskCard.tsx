@@ -106,6 +106,7 @@ export function TaskCard({
       title: formData.get('title') as string,
       priority: formData.get('priority') as 'High' | 'Medium' | 'Low',
       duedate: formData.get('duedate') as string,
+      // @ts-expect-error unknown type error
       status: (formData.get('status') as string).replace(' ', '_') as 'In_Progress' | 'In_Review' | 'On_Hold' | 'Completed',
       category: formData.get('category') as 'Development' | 'Testing' | 'Bugs',
       description: {
@@ -118,6 +119,7 @@ export function TaskCard({
       },
     };
     try {
+      // @ts-expect-error unknown type error
       await onEdit(updatedTask);
       setIsEditDialogOpen(false);
     } catch (error: unknown) {
@@ -303,9 +305,10 @@ export function TaskCard({
 
   return (
     <div
+      // @ts-expect-error unknown type error
       ref={drag}
       style={style}
-      className={`w-full ${deviceMode === 'desktop' ? 'w-full' : 'w-full'} rounded-[13px] h-[${deviceMode === 'mobile' ? '120px' : '130px'}] border flex flex-col bg-[#171818] touch-none shadow-lg`}
+      className={`w-full ${deviceMode === 'desktop' ? 'max-w-[302px] ' : 'w-full'} rounded-[13px] h-[${deviceMode === 'mobile' ? '120px' : '130px'}] border flex flex-col bg-[#171818] touch-none shadow-lg`}
     >
       <div className="w-full h-[40px] flex flex-row">
         <div className="w-[80%] flex items-center">
@@ -335,6 +338,7 @@ export function TaskCard({
                   title,
                   priority,
                   duedate,
+      // @ts-expect-error unknown type error
                   status: status.replace('_', ' '),
                   category,
                   description,

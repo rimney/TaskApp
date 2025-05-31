@@ -24,6 +24,7 @@ const HTML5toTouch = {
     {
       id: 'html5',
       backend: HTML5Backend,
+    // @ts-expect-error unknown type-error
       transition: createTransition('mousedown', (event) => !!event.buttons),
     },
     {

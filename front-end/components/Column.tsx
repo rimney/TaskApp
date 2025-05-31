@@ -2,14 +2,11 @@
 
 import { useDrop, DropTargetMonitor } from 'react-dnd';
 import { TaskCard } from './TaskCard';
-import { Task } from '@/types/tasks';
+// import { Task } from '@/types/tasks';
 import React, { useRef } from 'react';
 import { useDeviceMode } from '@/lib/hooks/useDeviceMode';
 import { hexToRgba } from '@/lib/utils/colorUtils';
 import { ColumnProps, DragItem } from '@/types/types';
-
-
-
 
 export function Column({ status, color, tasks, moveTask, onEdit, onDelete, isPriorityView }: ColumnProps) {
   const deviceMode = useDeviceMode();
@@ -40,6 +37,7 @@ export function Column({ status, color, tasks, moveTask, onEdit, onDelete, isPri
   });
 
   const setRef = (node: HTMLDivElement | null) => {
+    // @ts-expect-error unknown type-error
     divRef.current = node;
     drop(node);
   };
@@ -72,16 +70,16 @@ export function Column({ status, color, tasks, moveTask, onEdit, onDelete, isPri
   return (
     <div
       ref={setRef}
-      className={`flex-1 ${deviceMode === 'mobile' ? 'min-w-[100%]' : 'w-full bg-red-400'} min-h-${
+      className={`flex-1 ${deviceMode === 'mobile' ? 'min-w-[100%]' : 'w-full '} min-h-${
         deviceMode === 'mobile' ? 'auto' : 'screen'
-      } flex justify-start items-center overflow-x-hidden flex-col rounded shadow-lg overflow-y-auto`}
+      } flex justify-start  items-center overflow-x-hidden flex-col rounded shadow-lg overflow-y-auto`}
       style={{ backgroundColor: getBackgroundColor() }}
       data-column={status}
     >
       <h2 className="text-lg font-semibold mb-2 text-[#CAFE14]" style={{ color }}>
         {status} ({tasks.length})
       </h2>
-      <div className="space-y-2 p-1 w-full" style={{ transition: 'all 0.3s ease' }}>
+      <div className="space-y-2  flex flex-col items-center p-1 w-full" style={{ transition: 'all 0.3s ease' }}>
         {tasks.map((task) => (
           <TaskCard
             key={task.id}

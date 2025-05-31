@@ -8,12 +8,14 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
 import { toast } from 'sonner';
+import { useDeviceMode } from '@/lib/hooks/useDeviceMode';
 
 export default function LoginPage() {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [isLoading, setIsLoading] = useState(false);
   const router = useRouter();
+  const isMobile = useDeviceMode()
 
   const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -52,11 +54,11 @@ export default function LoginPage() {
       <div className="w-auto h-[90px] flex items-center justify-center">
         <img
           src="https://framerusercontent.com/images/vsdu0muTZsCIA7B6kX4sGvniM.svg?scale-down-to=1024"
-          className="w-[370px]"
+          className="w-[320px]"
           alt=""
         />
       </div>
-      <Card className="w-full max-w-md bg-[#171818] border-white shadow-lg">
+      <Card className={`w-full max-w-md ${isMobile === 'mobile' ? 'w-[90%]': ''}  bg-[#171818] border-white shadow-lg`}>
         <CardHeader>
           <CardTitle className="text-[#CAFE14]">Login</CardTitle>
           <CardDescription className="text-gray-300">

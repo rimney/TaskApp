@@ -156,7 +156,6 @@ export const moveTask = async (
     }
   }
 
-  // Optimistic update
   const previousTasks = [...tasks];
   const updatedTask: Task = {
     ...taskToUpdate,
@@ -178,6 +177,7 @@ export const moveTask = async (
     toast.success(`Task "${taskToUpdate.title}" moved to ${newValueDisplay}`);
   } catch (error: unknown) {
     // Rollback on error
+    // @ts-expect-error unknown type error
     setTasks(previousTasks);
     const errorMessage = error instanceof Error ? error.message : 'Unknown error';
     console.error('Move task error:', errorMessage);

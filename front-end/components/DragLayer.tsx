@@ -35,7 +35,6 @@ export function DragLayer() {
     const maxScrollSpeed = 60; // Maximum speed after acceleration
     const accelerationRate = 0.05; // Speed increase per frame
 
-    // Find the column or parent container under the dragged task
     const getScrollContainer = () => {
       const columns = document.querySelectorAll('[data-column]');
       const parentContainer = document.querySelector('[data-scroll-container="tasks-parent"]') as HTMLElement | null;

@@ -1,0 +1,66 @@
+version: '3.8'
+
+services:
+  frontend:
+    build:
+      context: ./front-end
+      dockerfile: Dockerfile.dev
+    ports:
+      - "3000:3000"
+    environment:
+      - NODE_ENV=development
+      - NEXT_PUBLIC_API_URL=http://backend:3001
+      - NEXT_PUBLIC_SUPABASE_URL=https://pjtomgtbkvcndhefuswk.supabase.co
+      - NEXT_PUBLIC_SUPABASE_ANON_KEY=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InBqdG9tZ3Ria3ZjbmRoZWZ1c3drIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NDc2MTk2NjAsImV4cCI6MjA2MzE5NTY2MH0.n66lEp94rVxxrBXI78m9xs3-KSpRFA7acUnw3SfTmpA
+    volumes:
+      - ./front-end:/app
+      - /app/node_modules
+    depends_on:
+      - backend
+    networks:
+      - app-network
+
+  backend:
+    build:
+      context: ./back-end
+      dockerfile: Dockerfile.dev
+    ports:
+      - "3001:3001"
+    environment:
+      - NODE_ENV=development
+      - DATABASE_URL=postgresql://admin:password@db:5432/taskdb?schema=public
+      - SUPABASE_JWT_SECRET=ARhnfgQ20w5CJttkOToTTFdyW8WyeY65rMopLPRgEwLi5Gft0LmZEc4HNitebLEncvwERbM2gjfTor8jgAbO9A==
+    volumes:
+      - ./back-end:/app
+      - /app/node_modules
+    depends_on:
+      db:
+        condition: service_healthy
+    networks:
+      - app-network
+
+  db:
+    image: postgres:16
+    environment:
+      - POSTGRES_USER=admin
+      - POSTGRES_PASSWORD=password
+      - POSTGRES_DB=taskdb
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+      - ./dump.sql:/docker-entrypoint-initdb.d/dump.sql
+    ports:
+      - "5439:5432"
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U admin -d taskdb"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+    networks:
+      - app-network
+
+networks:
+  app-network:
+    driver: bridge
+
+volumes:
+  pgdata:
